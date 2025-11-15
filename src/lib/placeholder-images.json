@@ -1,0 +1,76 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "A stylish gaming setup with neon lights.",
+      "imageUrl": "https://images.unsplash.com/photo-1616588589676-62b3bd4ff6d2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxnYW1pbmclMjBzZXR1cHxlbnwwfHx8fDE3NjMxMzkyMDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gaming setup"
+    },
+    {
+      "id": "ps5-console",
+      "description": "PlayStation 5 Console",
+      "imageUrl": "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxnYW1pbmclMjBjb25zb2xlfGVufDB8fHx8MTc2MzE0ODMyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gaming console"
+    },
+    {
+      "id": "xbox-series-x",
+      "description": "Xbox Series X Console",
+      "imageUrl": "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxnYW1pbmclMjBjb25zb2xlfGVufDB8fHx8MTc2MzE0ODMyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gaming console"
+    },
+    {
+      "id": "nintendo-switch",
+      "description": "Nintendo Switch OLED Console",
+      "imageUrl": "https://images.unsplash.com/photo-1695028644196-8f3797566566?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoYW5kaGVsZCUyMGNvbnNvbGV8ZW58MHx8fHwxNzYzMjQ3MTE0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "handheld console"
+    },
+    {
+      "id": "cyberpunk-2077",
+      "description": "Cyberpunk 2077 Game Cover",
+      "imageUrl": "https://images.unsplash.com/photo-1585620385456-4759f9b5c7d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx2aWRlbyUyMGdhbWV8ZW58MHx8fHwxNzYzMjQyMjU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "video game"
+    },
+    {
+      "id": "elden-ring",
+      "description": "Elden Ring Game Cover",
+      "imageUrl": "https://images.unsplash.com/photo-1600861194942-f883de0dfe96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx2aWRlbyUyMGdhbWV8ZW58MHx8fHwxNzYzMjQyMjU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "video game"
+    },
+    {
+      "id": "gaming-headset",
+      "description": "A wireless gaming headset",
+      "imageUrl": "https://images.unsplash.com/photo-1610041321327-b794c052db27?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxnYW1pbmclMjBoZWFkc2V0fGVufDB8fHx8MTc2MzE3MjMyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gaming headset"
+    },
+    {
+      "id": "pro-controller",
+      "description": "A professional gaming controller",
+      "imageUrl": "https://images.unsplash.com/photo-1616341316676-fb436b96f99a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxnYW1pbmclMjBjb250cm9sbGVyfGVufDB8fHx8MTc2MzEzNzMxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gaming controller"
+    },
+    {
+      "id": "mechanical-keyboard",
+      "description": "An RGB mechanical gaming keyboard",
+      "imageUrl": "https://images.unsplash.com/photo-1600035919823-fb13e3a9f085?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxnYW1pbmclMjBrZXlib2FyZHxlbnwwfHx8fDE3NjMxODY5OTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gaming keyboard"
+    },
+    {
+      "id": "gaming-mouse",
+      "description": "A lightweight ergonomic gaming mouse",
+      "imageUrl": "https://images.unsplash.com/photo-1629429408708-3a59f51979c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Z2FtaW5nJTIwbW91c2V8ZW58MHx8fHwxNzYzMTM0MDY5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gaming mouse"
+    },
+    {
+      "id": "zelda-totk",
+      "description": "The Legend of Zelda: Tears of the Kingdom Game Cover",
+      "imageUrl": "https://images.unsplash.com/photo-1507457379470-08b800bebc67?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx2aWRlbyUyMGdhbWV8ZW58MHx8fHwxNzYzMjQyMjU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "video game"
+    },
+    {
+      "id": "about-us-banner",
+      "description": "Team of gamers playing together.",
+      "imageUrl": "https://images.unsplash.com/photo-1726441969408-1cec59169d7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx0ZWFtJTIwZ2FtaW5nfGVufDB8fHx8MTc2MzI0NzExM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "team gaming"
+    }
+  ]
+}

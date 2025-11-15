@@ -1,0 +1,183 @@
+/**
+ * @fileoverview Firestore Security Rules for Pixel Emporium.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for user-specific data
+ * (addresses, orders, cart items), while allowing public read access to products
+ * and categories. Reviews are publicly accessible but creating them is restricted
+ * to authenticated users, and ownership is enforced for updates and deletes.
+ *
+ * Data Structure:
+ * - /products/{productId}: Public product information.
+ * - /categories/{categoryId}: Public category information.
+ * - /users/{userId}: User profile information (private).
+ * - /users/{userId}/addresses/{addressId}: User's addresses (private).
+ * - /users/{userId}/orders/{orderId}: User's orders (private).
+ * - /users/{userId}/orders/{orderId}/orderItems/{orderItemId}: User's order items (private).
+ * - /users/{userId}/cartItems/{cartItemId}: User's cart items (private).
+ * - /reviews/{reviewId}: Product reviews (public read, owner write).
+ *
+ * Key Security Decisions:
+ * - Products and Categories are publicly readable.
+ * - User data is strictly private, accessible only to the authenticated user.
+ * - Reviews are publicly readable, but creating, updating and deleting them
+ *   is restricted to the review's author.
+ * - User listing is explicitly denied.
+ *
+ * Denormalization for Authorization:
+ * - Reviews include the userId to allow direct ownership checks without additional reads.
+ *
+ * Structural Segregation:
+ * - Public data (products, categories) and private data (user profiles, orders)
+ *   are stored in separate top-level collections to simplify rules and avoid
+ *   complex queries.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Checks if the user is signed in.
+     * @return {boolean} True if the user is signed in, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the user is the owner of the document.
+     * @param {string} userId The user ID to compare against the request's auth UID.
+     * @return {boolean} True if the user is the owner, false otherwise.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the user is the owner of the document, and the document exists.
+     * @param {string} userId The user ID to compare against the resource data's userId field.
+     * @return {boolean} True if the user is the owner and the document exists, false otherwise.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Rules for the /products collection.
+     * @path /products/{productId}
+     * @allow (get, list): Any user can read product information.
+     * @allow (create, update, delete): No one can create, update or delete product information through the client.
+     * @deny (create, update, delete): All write operations are denied.
+     * @principle Public read-only access for products.
+     */
+    match /products/{productId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Rules for the /categories collection.
+     * @path /categories/{categoryId}
+     * @allow (get, list): Any user can read category information.
+     * @allow (create, update, delete): No one can create, update or delete category information through the client.
+     * @deny (create, update, delete): All write operations are denied.
+     * @principle Public read-only access for categories.
+     */
+    match /categories/{categoryId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Rules for the /users collection.
+     * @path /users/{userId}
+     * @allow (get): Only the user can read their own profile information.
+     * @allow (create): Only the user can create their own profile. User ID must match auth UID.
+     * @allow (update, delete): Only the user can update or delete their own profile information.
+     * @deny (list): User listing is not allowed.
+     * @principle Enforces document ownership for user profiles.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId) && request.resource.data.id == request.auth.uid;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Rules for the /users/{userId}/addresses collection.
+     * @path /users/{userId}/addresses/{addressId}
+     * @allow (get, list): Only the user can read their own addresses.
+     * @allow (create, update, delete): Only the user can create, update, or delete their own addresses.
+     * @principle Enforces document ownership for addresses.
+     */
+    match /users/{userId}/addresses/{addressId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Rules for the /users/{userId}/orders collection.
+     * @path /users/{userId}/orders/{orderId}
+     * @allow (get, list): Only the user can read their own orders.
+     * @allow (create, update, delete): Only the user can create, update, or delete their own orders.
+     * @principle Enforces document ownership for orders.
+     */
+    match /users/{userId}/orders/{orderId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Rules for the /users/{userId}/orders/{orderId}/orderItems collection.
+     * @path /users/{userId}/orders/{orderId}/orderItems/{orderItemId}
+     * @allow (get, list): Only the user can read their own order items.
+     * @allow (create, update, delete): Only the user can create, update, or delete their own order items.
+     * @principle Enforces document ownership for order items.
+     */
+    match /users/{userId}/orders/{orderId}/orderItems/{orderItemId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Rules for the /users/{userId}/cartItems collection.
+     * @path /users/{userId}/cartItems/{cartItemId}
+     * @allow (get, list): Only the user can read their own cart items.
+     * @allow (create, update, delete): Only the user can create, update, or delete their own cart items.
+     * @principle Enforces document ownership for cart items.
+     */
+    match /users/{userId}/cartItems/{cartItemId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Rules for the /reviews collection.
+     * @path /reviews/{reviewId}
+     * @allow (get, list): Any user can read reviews.
+     * @allow (create): Only authenticated users can create reviews, and userId must match auth UID.
+     * @allow (update, delete): Only the owner can update or delete their review.
+     * @principle Public read access for reviews, owner-only writes.
+     */
+    match /reviews/{reviewId} {
+      allow get, list: if true;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isExistingOwner(resource.data.userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(resource.data.userId);
+    }
+  }
+}
