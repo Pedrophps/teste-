@@ -1,7 +1,7 @@
 {
   "name": "nextn",
   "version": "0.1.0",
-  "private": true,
+  "private": "true",
   "scripts": {
     "dev": "next dev --turbopack -p 9002",
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
@@ -65,7 +65,7 @@
     "autoprefixer": "^10.4.19",
     "genkit-cli": "latest",
     "postcss": "^8.4.38",
-    "tailwindcss": "^4.0.0-alpha.18",
+    "tailwindcss": "4.0.0-alpha.18",
     "typescript": "latest"
   }
 }
