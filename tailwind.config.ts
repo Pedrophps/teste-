@@ -1,6 +1,6 @@
 import type {Config} from 'tailwindcss';
 
-export default {
+const config: Config = {
   darkMode: ['class'],
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -19,7 +19,6 @@ export default {
       fontFamily: {
         body: ['Inter', 'sans-serif'],
         headline: ['Space Grotesk', 'sans-serif'],
-        code: ['monospace'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -55,13 +54,6 @@ export default {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))',
-        },
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -90,28 +82,11 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
-      textShadow: {
-        'DEFAULT': '0 2px 4px rgba(0, 0, 0, 0.10)',
-        'md': '0 3px 6px rgba(0, 0, 0, 0.15)',
-        'lg': '0 10px 20px rgba(0, 0, 0, 0.25)',
-      },
     },
   },
   plugins: [
     require('tailwindcss-animate'),
-    function ({ addUtilities, theme }: { addUtilities: any, theme: any }) {
-      const newUtilities = {
-        '.text-shadow': {
-          textShadow: theme('textShadow.DEFAULT'),
-        },
-        '.text-shadow-md': {
-          textShadow: theme('textShadow.md'),
-        },
-        '.text-shadow-lg': {
-          textShadow: theme('textShadow.lg'),
-        },
-      }
-      addUtilities(newUtilities, ['responsive', 'hover'])
-    }
   ],
-} satisfies Config;
+};
+
+export default config;
