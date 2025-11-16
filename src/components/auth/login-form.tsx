@@ -10,10 +10,10 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAuth, initiateEmailSignIn, useUser } from '@/firebase';
+import { useAuth, useUser } from '@/firebase';
 import { useState, useEffect } from 'react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Por favor, insira um e-mail válido.' }),
@@ -27,6 +27,7 @@ export function LoginForm() {
   const auth = useAuth();
   const { user } = useUser();
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,22 +47,35 @@ export function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setError(null);
     if (!auth) {
-        setError("Serviço de autenticação não disponível.");
+        toast({
+            title: "Erro de Login",
+            description: "Serviço de autenticação não disponível.",
+            variant: "destructive",
+        });
         return;
     }
-    initiateEmailSignIn(auth, values.email, values.password);
+    
+    try {
+        await signInWithEmailAndPassword(auth, values.email, values.password);
+        // onAuthStateChanged in provider will handle redirect
+    } catch (error: any) {
+        let description = "Ocorreu um erro ao tentar fazer login.";
+        if (error.code === 'auth/invalid-credential') {
+            description = "Credenciais inválidas. Verifique seu e-mail e senha.";
+        }
+        
+        toast({
+            title: 'Erro de Login',
+            description,
+            variant: 'destructive',
+        });
+        console.error("Login Error:", error);
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {error && (
-            <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Erro de Login</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-            </Alert>
-        )}
         <FormField
           control={form.control}
           name="email"
