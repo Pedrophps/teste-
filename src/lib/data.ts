@@ -1,3 +1,4 @@
+
 import type { Product, Category, Order } from './types';
 
 export const categories: Category[] = [
@@ -133,7 +134,7 @@ export const products: Product[] = [
 export const orders: Order[] = [
   {
     id: 'ORD-12345',
-    userId: '1', // This will now be matched against Firebase User UID
+    userId: 'firebase-uid-1', // This will now be matched against Firebase User UID
     items: [
       { id: '4', name: 'Cyberpunk 2077', price: 199.90, quantity: 1, image: 'cyberpunk-2077' },
       { id: '6', name: 'Headset Gamer Sem Fio', price: 799.90, quantity: 1, image: 'gaming-headset' },

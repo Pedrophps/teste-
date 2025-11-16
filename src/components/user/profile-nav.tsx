@@ -1,3 +1,4 @@
+
 "use client"
 
 import Link from "next/link";
@@ -20,7 +21,9 @@ export function ProfileNav() {
 
     const handleLogout = async () => {
         const auth = getAuth();
-        await signOut(auth);
+        if (auth) {
+            await signOut(auth);
+        }
     }
 
     return (

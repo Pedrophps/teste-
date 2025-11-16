@@ -1,3 +1,4 @@
+
 "use client"
 
 import { orders } from "@/lib/data";
@@ -9,7 +10,8 @@ import { Badge } from "@/components/ui/badge";
 export default function OrdersPage() {
     const { user } = useUser();
     // In a real app, you'd fetch this from your backend against the user.uid
-    const userOrders = user ? orders.filter(o => o.userId === user.uid) : [];
+    // For now we'll mock it for a specific user ID for demo purposes.
+    const userOrders = user ? orders.filter(o => o.userId === 'firebase-uid-1') : [];
     
     const getStatusVariant = (status: string) => {
         switch (status) {
