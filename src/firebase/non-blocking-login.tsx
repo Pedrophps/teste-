@@ -4,6 +4,7 @@ import {
   Auth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInAnonymously,
   UserCredential,
 } from 'firebase/auth';
 
@@ -23,4 +24,3 @@ export function initiateEmailSignIn(authInstance: Auth, email: string, password:
   signInWithEmailAndPassword(authInstance, email, password);
   // Code continues immediately. Auth state change is handled by onAuthStateChanged listener.
 }
-import { signInAnonymously } from 'firebase/auth';

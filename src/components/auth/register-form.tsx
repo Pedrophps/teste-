@@ -6,12 +6,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { updateProfile } from "firebase/auth";
+import { updateProfile, createUserWithEmailAndPassword } from "firebase/auth";
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAuth, initiateEmailSignUp } from '@/firebase';
+import { useAuth } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
@@ -50,9 +50,9 @@ export function RegisterForm() {
     }
     
     try {
-        const userCredential = await initiateEmailSignUp(auth, values.email, values.password);
-        if (auth.currentUser) {
-            await updateProfile(auth.currentUser, {
+        const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+        if (userCredential.user) {
+            await updateProfile(userCredential.user, {
                 displayName: values.name,
             });
         }
