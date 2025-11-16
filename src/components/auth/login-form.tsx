@@ -46,8 +46,8 @@ export function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!auth) {
         toast({
-            title: "Erro de Login",
-            description: "Serviço de autenticação não disponível.",
+            title: "Erro de Autenticação",
+            description: "O serviço de autenticação não está disponível.",
             variant: "destructive",
         });
         return;
@@ -55,18 +55,18 @@ export function LoginForm() {
     
     try {
         await signInWithEmailAndPassword(auth, values.email, values.password);
-        // onAuthStateChanged in provider will handle redirect
+        // O onAuthStateChanged no provider cuidará do redirecionamento
     } catch (error: any) {
         if (error.code === 'auth/invalid-credential') {
              toast({
                 title: 'Erro de Login',
-                description: "usuario não localizado por favor cadastre-se",
+                description: "Credenciais inválidas. Verifique seu e-mail e senha.",
                 variant: 'destructive',
             });
         } else {
              toast({
                 title: 'Erro de Login',
-                description: "Ocorreu um erro inesperado.",
+                description: "Ocorreu um erro inesperado durante o login.",
                 variant: 'destructive',
             });
         }
