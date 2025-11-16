@@ -2,18 +2,23 @@
 'use client';
 
 import { firebaseConfig } from '@/firebase/config';
-import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore'
 
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
 export function initializeFirebase() {
+  // On the server, we need to check if an app has been initialized, otherwise
+  // we initialize one.
+  // On the client, we just want to initialize the app.
+  // We are relying on the fact that the first time this function is called
+  // it is on the server.
   if (typeof window === 'undefined') {
-    // Return dummy values for server-side rendering
-    if (getApps().length > 0) {
+    if (getApps().length === 0) {
+      return getSdks(initializeApp(firebaseConfig));
+    } else {
       return getSdks(getApp());
     }
-    return getSdks(initializeApp(firebaseConfig, "server-app"));
   }
   
   if (getApps().length > 0) {
