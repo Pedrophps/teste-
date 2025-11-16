@@ -10,11 +10,10 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAuth, initiateEmailSignIn } from '@/firebase';
+import { useAuth, initiateEmailSignIn, useUser } from '@/firebase';
 import { useState, useEffect } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
-import { onAuthStateChanged } from 'firebase/auth';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Por favor, insira um e-mail válido.' }),
@@ -26,6 +25,7 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect') || '/profile';
   const auth = useAuth();
+  const { user } = useUser();
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -37,22 +37,10 @@ export function LoginForm() {
   });
 
   useEffect(() => {
-    if (!auth) return;
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        router.push(redirectUrl);
-      }
-    }, (error) => {
-        let errorMessage = 'Ocorreu um erro ao verificar a autenticação. Por favor, tente novamente.';
-        if (error.code === 'auth/network-request-failed') {
-            errorMessage = 'Erro de rede. Verifique sua conexão e tente novamente.';
-        }
-        setError(errorMessage);
-        console.error("Auth state error:", error);
-    });
-
-    return () => unsubscribe();
-  }, [auth, router, redirectUrl]);
+    if (user) {
+      router.push(redirectUrl);
+    }
+  }, [user, router, redirectUrl]);
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
