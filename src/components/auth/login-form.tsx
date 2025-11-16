@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from 'react-hook-form';
@@ -11,9 +12,10 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/firebase';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Por favor, insira um e-mail válido.' }),
@@ -35,6 +37,25 @@ export function LoginForm() {
     },
   });
 
+  useEffect(() => {
+    if (!auth) return;
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        router.push(redirectUrl);
+      }
+    }, (error) => {
+        let errorMessage = 'Ocorreu um erro ao fazer login. Por favor, tente novamente.';
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+            errorMessage = 'E-mail ou senha inválidos. Por favor, tente novamente.';
+        }
+        setError(errorMessage);
+        console.error(error);
+    });
+
+    return () => unsubscribe();
+  }, [auth, router, redirectUrl]);
+
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setError(null);
     if (!auth) {
@@ -44,7 +65,7 @@ export function LoginForm() {
 
     try {
         await signInWithEmailAndPassword(auth, values.email, values.password);
-        router.push(redirectUrl);
+        // The onAuthStateChanged listener will handle the redirect
     } catch (e: any) {
         let errorMessage = 'Ocorreu um erro ao fazer login. Por favor, tente novamente.';
         if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {

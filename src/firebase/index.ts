@@ -1,3 +1,4 @@
+
 'use client';
 
 import { firebaseConfig } from '@/firebase/config';
@@ -7,13 +8,13 @@ import { getFirestore } from 'firebase/firestore'
 
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
 export function initializeFirebase() {
+  if (typeof window === 'undefined') {
+    return getSdks(initializeApp(firebaseConfig));
+  }
+  
   if (getApps().length > 0) {
     return getSdks(getApp());
   }
-
-  // When deploying to Vercel or other non-Firebase hosting,
-  // we must provide the config object. `initializeApp()` without arguments
-  // only works on Firebase App Hosting.
   const firebaseApp = initializeApp(firebaseConfig);
   return getSdks(firebaseApp);
 }
