@@ -10,10 +10,10 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAuth, initiateEmailSignIn, useUser } from '@/firebase';
-import { useState, useEffect } from 'react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { useAuth, useUser } from '@/firebase';
+import { useEffect } from 'react';
+import { signInWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Por favor, insira um e-mail válido.' }),
@@ -26,7 +26,7 @@ export function LoginForm() {
   const redirectUrl = searchParams.get('redirect') || '/profile';
   const auth = useAuth();
   const { user } = useUser();
-  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,24 +44,55 @@ export function LoginForm() {
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setError(null);
     if (!auth) {
-        setError("Serviço de autenticação não disponível.");
+        toast({
+            title: "Erro de Login",
+            description: "Serviço de autenticação não disponível.",
+            variant: "destructive",
+        });
         return;
     }
-    initiateEmailSignIn(auth, values.email, values.password);
+    
+    try {
+        // Step 1: Check if the user exists
+        const signInMethods = await fetchSignInMethodsForEmail(auth, values.email);
+
+        if (signInMethods.length === 0) {
+            // User does not exist
+            toast({
+                title: 'Erro de Login',
+                description: 'usuario não localizado por favor cadastre-se',
+                variant: 'destructive',
+            });
+            return;
+        }
+
+        // Step 2: Attempt to sign in (if user exists)
+        await signInWithEmailAndPassword(auth, values.email, values.password);
+        // onAuthStateChanged in provider will handle redirect
+
+    } catch (error: any) {
+        // This will now primarily catch incorrect password errors
+        if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+             toast({
+                title: 'Erro de Login',
+                description: "Senha incorreta. Por favor, tente novamente.",
+                variant: 'destructive',
+            });
+        } else {
+             toast({
+                title: 'Erro de Login',
+                description: "Ocorreu um erro inesperado.",
+                variant: 'destructive',
+            });
+        }
+        console.error("Login Error:", error);
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {error && (
-            <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Erro de Login</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-            </Alert>
-        )}
         <FormField
           control={form.control}
           name="email"
