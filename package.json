@@ -32,7 +32,6 @@
     "@radix-ui/react-scroll-area": "*",
     "@radix-ui/react-select": "*",
     "@radix-ui/react-separator": "*",
-    "patch-package": "*",
     "@radix-ui/react-slider": "*",
     "@radix-ui/react-slot": "*",
     "@radix-ui/react-switch": "*",
@@ -48,6 +47,7 @@
     "genkit": "*",
     "lucide-react": "*",
     "next": "latest",
+    "patch-package": "*",
     "react": "latest",
     "react-day-picker": "*",
     "react-dom": "latest",
@@ -58,7 +58,7 @@
     "zod": "*"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "latest",
+    "@tailwindcss/postcss": "^4.1.17",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
