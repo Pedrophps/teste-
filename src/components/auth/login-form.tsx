@@ -26,7 +26,6 @@ export function LoginForm() {
   const redirectUrl = searchParams.get('redirect') || '/profile';
   const auth = useAuth();
   const { user } = useUser();
-  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -45,7 +44,6 @@ export function LoginForm() {
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setError(null);
     if (!auth) {
         toast({
             title: "Erro de Login",
@@ -61,7 +59,7 @@ export function LoginForm() {
     } catch (error: any) {
         let description = "Ocorreu um erro ao tentar fazer login.";
         if (error.code === 'auth/invalid-credential') {
-            description = "Credenciais inválidas. Verifique seu e-mail e senha.";
+            description = "usuario não localizado por favor cadastre-se";
         }
         
         toast({
