@@ -11,8 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useAuth, useUser } from '@/firebase';
-import { useState, useEffect } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useEffect } from 'react';
+import { signInWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
@@ -54,19 +54,38 @@ export function LoginForm() {
     }
     
     try {
+        // Step 1: Check if the user exists
+        const signInMethods = await fetchSignInMethodsForEmail(auth, values.email);
+
+        if (signInMethods.length === 0) {
+            // User does not exist
+            toast({
+                title: 'Erro de Login',
+                description: 'usuario não localizado por favor cadastre-se',
+                variant: 'destructive',
+            });
+            return;
+        }
+
+        // Step 2: Attempt to sign in (if user exists)
         await signInWithEmailAndPassword(auth, values.email, values.password);
         // onAuthStateChanged in provider will handle redirect
+
     } catch (error: any) {
-        let description = "Ocorreu um erro ao tentar fazer login.";
-        if (error.code === 'auth/invalid-credential') {
-            description = "usuario não localizado por favor cadastre-se";
+        // This will now primarily catch incorrect password errors
+        if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+             toast({
+                title: 'Erro de Login',
+                description: "Senha incorreta. Por favor, tente novamente.",
+                variant: 'destructive',
+            });
+        } else {
+             toast({
+                title: 'Erro de Login',
+                description: "Ocorreu um erro inesperado.",
+                variant: 'destructive',
+            });
         }
-        
-        toast({
-            title: 'Erro de Login',
-            description,
-            variant: 'destructive',
-        });
         console.error("Login Error:", error);
     }
   }
