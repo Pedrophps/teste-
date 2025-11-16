@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { updateProfile } from "firebase/auth";
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -50,16 +50,19 @@ export function RegisterForm() {
     }
     
     try {
-        const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-        await updateProfile(userCredential.user, {
-            displayName: values.name,
-        });
-
+        const userCredential = await initiateEmailSignUp(auth, values.email, values.password);
+        if (auth.currentUser) {
+            await updateProfile(auth.currentUser, {
+                displayName: values.name,
+            });
+        }
+        
         toast({
             title: 'Cadastro realizado com sucesso!',
             description: 'Você será redirecionado para a página de login.',
         });
         router.push('/login');
+
     } catch (error: any) {
         let description = 'Não foi possível criar sua conta. Por favor, tente novamente.';
         if (error.code === 'auth/email-already-in-use') {

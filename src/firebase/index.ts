@@ -9,7 +9,7 @@ import { getFirestore } from 'firebase/firestore'
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
 export function initializeFirebase() {
   if (typeof window === 'undefined') {
-    return getSdks(initializeApp(firebaseConfig));
+    return getSdks(initializeApp(firebaseConfig, "server-app"));
   }
   
   if (getApps().length > 0) {
