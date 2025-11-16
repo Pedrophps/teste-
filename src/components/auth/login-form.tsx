@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAuth, useUser } from '@/firebase';
+import { useFirebase } from '@/firebase';
 import { useEffect } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
@@ -24,8 +24,7 @@ export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect') || '/profile';
-  const auth = useAuth();
-  const { user } = useUser();
+  const { auth, user, isUserLoading } = useFirebase();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -44,17 +43,12 @@ export function LoginForm() {
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!auth) {
-        toast({
-            title: "Erro de Autenticação",
-            description: "O serviço de autenticação não está disponível.",
-            variant: "destructive",
-        });
-        return;
-    }
-    
     try {
         await signInWithEmailAndPassword(auth, values.email, values.password);
+        toast({
+            title: "Login bem-sucedido!",
+            description: "Você será redirecionado em breve.",
+        });
         // O onAuthStateChanged no provider cuidará do redirecionamento
     } catch (error: any) {
         if (error.code === 'auth/invalid-credential') {
@@ -65,8 +59,8 @@ export function LoginForm() {
             });
         } else {
              toast({
-                title: 'Erro de Login',
-                description: "Ocorreu um erro inesperado durante o login.",
+                title: 'Erro Inesperado',
+                description: "Ocorreu um erro durante o login. Tente novamente.",
                 variant: 'destructive',
             });
         }
@@ -108,7 +102,7 @@ export function LoginForm() {
             <Link href="#">Esqueceu sua senha?</Link>
           </Button>
         </div>
-        <Button type="submit" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" disabled={form.formState.isSubmitting}>
+        <Button type="submit" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" disabled={form.formState.isSubmitting || isUserLoading}>
           {form.formState.isSubmitting ? 'Entrando...' : 'Entrar'}
         </Button>
         <div className="text-center text-sm text-muted-foreground">
